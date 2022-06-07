@@ -1,0 +1,32 @@
+spring:
+  application:
+    name: gateway
+  cloud:
+    gateway:
+      routes:
+        - id: ${SERVICE0_NAME:user}
+          uri:
+            http://${SERVICE0_HOST:localhost}:${SERVICE1_PORT:3001}/
+          predicates:
+            - Path=${SERVICE0_PATH:/api/auth}/**
+        - id: ${SERVICE1_NAME:user}
+          uri:
+            http://${SERVICE1_HOST:localhost}:${SERVICE1_PORT:3002}/
+          predicates:
+            - Path=${SERVICE1_PATH:/api/users}/**
+        - id: ${SERVICE2_NAME:course}
+          uri:
+            http://${SERVICE2_HOST:localhost}:${SERVICE2_PORT:3003}/
+          predicates:
+            - Path=${SERVICE2_PATH:/course}/**
+        - id: ${SERVICE3_NAME:mark}
+          uri:
+            http://${SERVICE3_HOST:localhost}:${SERVICE3_PORT:3004}/
+          predicates:
+            - Path=${SERVICE3_PATH:/mark}/**
+server:
+  port: ${SERVER_PORT:4000}
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://${DISCOVERY_HOST:localhost}:${DISCOVERY_PORT:3000}/eureka/
