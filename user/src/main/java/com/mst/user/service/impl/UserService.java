@@ -25,11 +25,6 @@ public class UserService implements IUserService{
 	private final ModelMapper modelMapper;
 
 	@Override
-	public UserModel save(User user) {
-		return modelMapper.map(userRepository.save(user), UserModel.class);
-	}
-
-	@Override
 	public void delete(User user) {
 		userRepository.deleteById(user.getId());
 	}

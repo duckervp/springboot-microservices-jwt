@@ -26,7 +26,6 @@ public class UserController {
 
     @GetMapping("/q")
     public UserModel findByUsername(@RequestParam String username) {
-
         return userService.findByUsername(username);
     }
 
@@ -38,11 +37,6 @@ public class UserController {
     @GetMapping("/exists")
     public Boolean checkUsernameExists(@RequestParam String username) {
         return userService.existsByUsername(username);
-    }
-
-    @PostMapping()
-    public UserModel save(@RequestBody User user) {
-        return userService.save(user);
     }
 
     @DeleteMapping("/{id}")

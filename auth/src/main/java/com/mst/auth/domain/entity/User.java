@@ -1,10 +1,12 @@
 package com.mst.auth.domain.entity;
 
+import com.mst.auth.domain.dto.RegisterRequestDto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -25,7 +27,11 @@ public class User {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
-	
+
+	@NotBlank
+	@Size(max = 50)
+	private String name;
+
 	@NotNull
 	@Size(max = 25)
 	private String username;
@@ -34,10 +40,6 @@ public class User {
 	@Size(max = 120)
 	private String password;
 
-	@NotBlank
-	@Size(max = 50)
-	private String name;
-	
 	private Integer majorId;
 
 	@ManyToMany(fetch = FetchType.LAZY)
@@ -48,4 +50,11 @@ public class User {
 	)
 	private Set<Role> roles = new HashSet<>();
 
+	public User(String name, String username, String password, Integer majorId, Set<Role> roles) {
+		this.name = name;
+		this.username = username;
+		this.password = password;
+		this.majorId = majorId;
+		this.roles = roles;
+	}
 }

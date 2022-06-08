@@ -21,4 +21,9 @@ public class UserService implements IUserService {
 	public Boolean existsByUsername(String username) {
 		return userRepository.existsByUsername(username);
 	}
+
+	@Override
+	public User save(User user) {
+		return userRepository.save(user);
+	}
 }

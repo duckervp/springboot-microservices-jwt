@@ -6,7 +6,6 @@ import com.mst.user.domain.model.UserModel;
 import java.util.List;
 
 public interface IUserService {
-	UserModel save(User user);
 	void delete(User user);
 
 	List<UserModel> findAll();

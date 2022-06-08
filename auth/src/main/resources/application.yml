@@ -20,5 +20,5 @@ eureka:
 jwt:
   secret: ENC(firp/uib+gXsjkTb8niD6QuiZpNKlcY2)
   token:
-    validity: 800000
+    validity: 900000
 
