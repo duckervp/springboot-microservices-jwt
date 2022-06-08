@@ -14,11 +14,11 @@ spring:
             http://${SERVICE1_HOST:localhost}:${SERVICE1_PORT:3002}/
           predicates:
             - Path=${SERVICE1_PATH:/api/users}/**
-        - id: ${SERVICE2_NAME:course}
+        - id: ${SERVICE2_NAME:major}
           uri:
             http://${SERVICE2_HOST:localhost}:${SERVICE2_PORT:3003}/
           predicates:
-            - Path=${SERVICE2_PATH:/course}/**
+            - Path=${SERVICE2_PATH:/api/majors}/**
         - id: ${SERVICE3_NAME:mark}
           uri:
             http://${SERVICE3_HOST:localhost}:${SERVICE3_PORT:3004}/

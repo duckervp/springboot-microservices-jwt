@@ -1,10 +1,9 @@
 package com.mst.user.controller;
 
+import com.mst.user.domain.entity.User;
 import com.mst.user.domain.model.UserModel;
 import com.mst.user.service.IUserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -15,7 +14,6 @@ import java.util.List;
 public class UserController {
     private final IUserService userService;
 
-    @PreAuthorize("hasAuthority('STUDENT')")
     @GetMapping ()
     public List<UserModel> findAll() {
         return userService.findAll();
@@ -32,8 +30,25 @@ public class UserController {
         return userService.findByUsername(username);
     }
 
+    @GetMapping("/roles/q")
+    public List<String> findUserRoles(@RequestParam String username) {
+        return userService.findUserRoles(username);
+    }
+
     @GetMapping("/exists")
     public Boolean checkUsernameExists(@RequestParam String username) {
         return userService.existsByUsername(username);
+    }
+
+    @PostMapping()
+    public UserModel save(@RequestBody User user) {
+        return userService.save(user);
+    }
+
+    @DeleteMapping("/{id}")
+    public void deleteUser(@PathVariable Integer id) {
+        User user = new User();
+        user.setId(id);
+        userService.delete(user);
     }
 }

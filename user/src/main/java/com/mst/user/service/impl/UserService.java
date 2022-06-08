@@ -1,5 +1,6 @@
 package com.mst.user.service.impl;
 
+import com.mst.user.client.MajorClient;
 import com.mst.user.domain.model.UserModel;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -19,27 +20,25 @@ import java.util.stream.Collectors;
 public class UserService implements IUserService{
 	private final UserRepository userRepository;
 
+	private final MajorClient majorClient;
+
 	private final ModelMapper modelMapper;
 
 	@Override
-	public Integer save(User user) {
-		return userRepository.save(user).getId();
-	}
-
-	@Override
-	public void update(User user) {
-		userRepository.save(user);
+	public UserModel save(User user) {
+		return modelMapper.map(userRepository.save(user), UserModel.class);
 	}
 
 	@Override
 	public void delete(User user) {
-		userRepository.delete(user);
+		userRepository.deleteById(user.getId());
 	}
 
 	@Override
 	public List<UserModel> findAll() {
 		return userRepository.findAll().stream()
 				.map(user -> modelMapper.map(user, UserModel.class))
+				.peek(userModel -> userModel.setMajor(majorClient.findById(userModel.getId())))
 				.collect(Collectors.toList());
 	}
 
@@ -56,7 +55,7 @@ public class UserService implements IUserService{
 	public UserModel findByUsername(String username) {
 		User user = userRepository.findByUsername(username).orElse(null);
 		if (Objects.nonNull(user)) {
-			return modelMapper.map(user, UserModel.class);
+			return mapUserModelFrom(user);
 		}
 		return null;
 	}
@@ -64,5 +63,19 @@ public class UserService implements IUserService{
 	@Override
 	public Boolean existsByUsername(String username) {
 		return userRepository.existsByUsername(username);
+	}
+
+	@Override
+	public List<String> findUserRoles(String username) {
+		UserModel user = findByUsername(username);
+		return user.getRoles().stream()
+				.map(role -> role.getName().name())
+				.collect(Collectors.toList());
+	}
+
+	public UserModel mapUserModelFrom(User user) {
+		UserModel userModel = modelMapper.map(user, UserModel.class);
+		userModel.setMajor(majorClient.findById(userModel.getId()));
+		return userModel;
 	}
 }

@@ -4,11 +4,9 @@ import com.mst.user.domain.entity.User;
 import com.mst.user.domain.model.UserModel;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface IUserService {
-	Integer save(User user);
-	void update(User user);
+	UserModel save(User user);
 	void delete(User user);
 
 	List<UserModel> findAll();
@@ -18,4 +16,6 @@ public interface IUserService {
 	UserModel findByUsername(String username);
 
 	Boolean existsByUsername(String username);
+
+	List<String> findUserRoles(String username);
 }

@@ -12,6 +12,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 
 @SpringBootApplication
 @EnableEurekaClient
+@EnableFeignClients
 public class UserApplication {
 
     @Bean
