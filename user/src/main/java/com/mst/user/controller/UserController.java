@@ -29,7 +29,7 @@ public class UserController {
     @GetMapping("/q")
     public UserModel findByUsername(@RequestParam String username) {
 
-        return userService.findUserModelByUsername(username);
+        return userService.findByUsername(username);
     }
 
     @GetMapping("/exists")

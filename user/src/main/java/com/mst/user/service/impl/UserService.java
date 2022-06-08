@@ -10,6 +10,7 @@ import com.mst.user.repository.UserRepository;
 import com.mst.user.service.IUserService;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -52,14 +53,9 @@ public class UserService implements IUserService{
 	}
 
 	@Override
-	public Optional<User> findByUsername(String username) {
-		return userRepository.findByUsername(username);
-	}
-
-	@Override
-	public UserModel findUserModelByUsername(String username) {
-		User user = findByUsername(username).orElse(null);
-		if (user != null) {
+	public UserModel findByUsername(String username) {
+		User user = userRepository.findByUsername(username).orElse(null);
+		if (Objects.nonNull(user)) {
 			return modelMapper.map(user, UserModel.class);
 		}
 		return null;

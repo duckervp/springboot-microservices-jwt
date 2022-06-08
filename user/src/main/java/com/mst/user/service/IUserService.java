@@ -15,9 +15,7 @@ public interface IUserService {
 
 	UserModel findById(Integer id);
 
-	Optional<User> findByUsername(String username);
-
-	UserModel findUserModelByUsername(String username);
+	UserModel findByUsername(String username);
 
 	Boolean existsByUsername(String username);
 }
