@@ -75,6 +75,15 @@
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
+	
+	<modules>
+		<module>auth</module>
+		<module>discovery</module>
+		<module>gateway</module>
+		<module>gateway</module>
+		<module>major</module>
+		<module>user</module>
+	</modules>
 
 	<build>
 		<plugins>
