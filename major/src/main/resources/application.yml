@@ -17,4 +17,3 @@ eureka:
     serviceUrl:
       defaultZone: http://${DISCOVERY_HOST:localhost}:${DISCOVERY_PORT:3000}/eureka/
 jwt:
-  secret: ENC(firp/uib+gXsjkTb8niD6QuiZpNKlcY2)

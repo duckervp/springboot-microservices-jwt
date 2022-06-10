@@ -1,4 +1,4 @@
-package com.mst.major.domain.dto;
+package com.mst.auth.domain.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

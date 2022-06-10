@@ -1,10 +1,10 @@
 package com.mst.major.config;
 
-import com.mst.major.client.UserClient;
-import com.mst.major.exception.JwtTokenMalformedException;
-import com.mst.major.exception.JwtTokenMissingException;
+import com.mst.major.client.AuthClient;
+import com.mst.major.domain.dto.ExtendedMessageDto;
+import com.mst.major.domain.dto.MessageDto;
 import com.mst.major.util.HttpServletResponseUtil;
-import com.mst.major.util.JwtUtil;
+import feign.FeignException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
@@ -20,46 +20,48 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
-import java.util.Objects;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
 public class JwtTokenFilter extends OncePerRequestFilter {
-    private final JwtUtil jwtUtil;
-
-    private final UserClient userClient;
+    private final AuthClient authClient;
 
     private final HttpServletResponseUtil responseUtil;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        String token = jwtUtil.parseToken(request);
-        if (Objects.nonNull(token)) {
-            try {
-                jwtUtil.validateToken(token);
-            } catch (JwtTokenMalformedException | JwtTokenMissingException e) {
-                int  statusCode = HttpServletResponse.SC_UNAUTHORIZED;
-                if (e instanceof JwtTokenMissingException) {
-                    statusCode = HttpServletResponse.SC_BAD_REQUEST;
-                }
-                responseUtil.createFailureResponse(request, response, statusCode, e);
-                return;
-            }
-            String username = jwtUtil.getClaims(token).getSubject();
-            List<String>  userRoles = userClient.findUserRoles(username);
-            List<GrantedAuthority> authorities = userRoles.stream()
-                    .map(role -> new SimpleGrantedAuthority(role))
-                    .collect(Collectors.toList());
-
-            UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
-                    null,
-                    null,
-                    authorities
+        MessageDto responseMessage;
+        try {
+            responseMessage =  authClient.validateToken();
+        } catch (FeignException e) {
+            MessageDto message = new MessageDto(
+                    "401",
+                    false,
+                    "Validate token fail!",
+                    "Authorization header is required!"
             );
-            authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-            SecurityContextHolder.getContext().setAuthentication(authentication);
+            responseUtil.sendFailureResponse(response, message);
+            return;
         }
+
+        if (!responseMessage.getStatus()) {
+            responseUtil.sendFailureResponse(response, responseMessage);
+            return;
+        }
+        List<String> roles = (List<String>) ((ExtendedMessageDto<Map>) responseMessage).getData().get("roles");
+        List<GrantedAuthority> authorities = roles.stream()
+                .map(role -> new SimpleGrantedAuthority(role))
+                .collect(Collectors.toList());
+
+        UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
+                null,
+                null,
+                authorities
+        );
+        authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+        SecurityContextHolder.getContext().setAuthentication(authentication);
         filterChain.doFilter(request, response);
     }
 

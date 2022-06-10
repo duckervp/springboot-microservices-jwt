@@ -1,4 +1,4 @@
-package com.mst.major.exception;
+package com.mst.auth.exception;
 
 import javax.naming.AuthenticationException;
 

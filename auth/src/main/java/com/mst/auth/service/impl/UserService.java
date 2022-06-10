@@ -6,7 +6,10 @@ import com.mst.auth.service.IUserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -25,5 +28,16 @@ public class UserService implements IUserService {
 	@Override
 	public User save(User user) {
 		return userRepository.save(user);
+	}
+
+	@Override
+	public List<String> findUserRoles(String username) {
+		User user = findByUsername(username).orElse(null);
+		if (Objects.nonNull(user)) {
+			return user.getRoles().stream()
+					.map(role -> role.getName().name())
+					.collect(Collectors.toList());
+		}
+		return null;
 	}
 }

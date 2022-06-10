@@ -11,7 +11,6 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 @EnableWebSecurity
 @EnableFeignClients
 public class AuthApplication {
-
     @Bean
     public ModelMapper modelMapper() {
         return new ModelMapper();

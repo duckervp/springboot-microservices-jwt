@@ -1,6 +1,8 @@
 package com.mst.user.service.impl;
 
 import com.mst.user.client.MajorClient;
+import com.mst.user.domain.dto.ExtendedMessageDto;
+import com.mst.user.domain.model.MajorModel;
 import com.mst.user.domain.model.UserModel;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -12,7 +14,6 @@ import com.mst.user.service.IUserService;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -32,8 +33,7 @@ public class UserService implements IUserService{
 	@Override
 	public List<UserModel> findAll() {
 		return userRepository.findAll().stream()
-				.map(user -> modelMapper.map(user, UserModel.class))
-				.peek(userModel -> userModel.setMajor(majorClient.findById(userModel.getId())))
+				.map(user -> mapUserModelFrom(user))
 				.collect(Collectors.toList());
 	}
 
@@ -41,7 +41,7 @@ public class UserService implements IUserService{
 	public UserModel findById(Integer id) {
 		User user = userRepository.findById(id).orElse(null);
 		if (user != null) {
-			return modelMapper.map(user, UserModel.class);
+			return mapUserModelFrom(user);
 		}
 		return null;
 	}
@@ -70,7 +70,8 @@ public class UserService implements IUserService{
 
 	public UserModel mapUserModelFrom(User user) {
 		UserModel userModel = modelMapper.map(user, UserModel.class);
-		userModel.setMajor(majorClient.findById(userModel.getId()));
+		ExtendedMessageDto message = majorClient.findById(userModel.getMajor().getId());
+		userModel.setMajor(modelMapper.map(message.getData(), MajorModel.class));
 		return userModel;
 	}
 }
