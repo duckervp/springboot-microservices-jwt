@@ -1,7 +1,7 @@
 package com.mst.user.service.impl;
 
 import com.mst.user.client.MajorClient;
-import com.mst.user.domain.dto.ExtendedMessageDto;
+import com.mst.user.domain.message.ExtendedMessage;
 import com.mst.user.domain.model.MajorModel;
 import com.mst.user.domain.model.UserModel;
 import lombok.RequiredArgsConstructor;
@@ -70,7 +70,7 @@ public class UserService implements IUserService{
 
 	public UserModel mapUserModelFrom(User user) {
 		UserModel userModel = modelMapper.map(user, UserModel.class);
-		ExtendedMessageDto message = majorClient.findById(userModel.getMajor().getId());
+		ExtendedMessage message = majorClient.findById(userModel.getMajor().getId());
 		userModel.setMajor(modelMapper.map(message.getData(), MajorModel.class));
 		return userModel;
 	}

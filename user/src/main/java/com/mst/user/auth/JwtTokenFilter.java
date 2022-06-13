@@ -1,9 +1,10 @@
-package com.mst.major.config;
+package com.mst.user.auth;
 
-import com.mst.major.client.AuthClient;
-import com.mst.major.domain.dto.ExtendedMessageDto;
-import com.mst.major.domain.dto.MessageDto;
-import com.mst.major.util.HttpServletResponseUtil;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.mst.user.client.AuthClient;
+import com.mst.user.domain.message.ExtendedMessage;
+import com.mst.user.domain.message.BaseMessage;
+import com.mst.user.util.HttpServletResponseUtil;
 import feign.FeignException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -20,7 +21,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 @Component
@@ -32,27 +32,23 @@ public class JwtTokenFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        MessageDto responseMessage;
+        ExtendedMessage<?> responseMessage;
         try {
             responseMessage =  authClient.validateToken();
         } catch (FeignException e) {
-            MessageDto message = new MessageDto(
-                    "401",
-                    false,
-                    "Validate token fail!",
-                    "Authorization header is required!"
-            );
+            ObjectMapper objectMapper= new ObjectMapper();
+            BaseMessage message = objectMapper.readValue(e.contentUTF8(), BaseMessage.class);
             responseUtil.sendFailureResponse(response, message);
             return;
         }
 
-        if (!responseMessage.getStatus()) {
+        if (!responseMessage.getSuccess()) {
             responseUtil.sendFailureResponse(response, responseMessage);
             return;
         }
-        List<String> roles = (List<String>) ((ExtendedMessageDto<Map>) responseMessage).getData().get("roles");
+        List<String> roles = (List<String>) responseMessage.getData();
         List<GrantedAuthority> authorities = roles.stream()
-                .map(role -> new SimpleGrantedAuthority(role))
+                .map(SimpleGrantedAuthority::new)
                 .collect(Collectors.toList());
 
         UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(

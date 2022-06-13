@@ -1,45 +1,40 @@
 package com.mst.user.controller;
 
-import com.mst.user.domain.dto.ExtendedMessageDto;
-import com.mst.user.domain.dto.MessageDto;
+import com.mst.user.domain.message.BaseMessage;
+import com.mst.user.domain.message.ExtendedMessage;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 
 public class BaseController {
 
-    public <T> MessageDto createSuccessResponse(T data) {
-        return new ExtendedMessageDto<T>(
+    public <T> ResponseEntity<?> createSuccessResponse(String message, String description, T data) {
+        ExtendedMessage<T> responseMessage =  new ExtendedMessage<>(
                 HttpStatus.OK.value() + "",
                 true,
-                null,
-                null,
-                data
-        );
-    }
-    public <T> MessageDto createSuccessResponse(String description, String message, T data) {
-        return new ExtendedMessageDto<T>(
-                HttpStatus.OK.value() + "",
-                true,
-                description,
                 message,
-                data
-        );
+                description,
+                data);
+        return new ResponseEntity<>(responseMessage, HttpStatus.OK);
     }
 
-    public MessageDto createSuccessResponse() {
-        return new MessageDto(
-                HttpStatus.OK.value() + "",
-                true,
-                null,
-                null
-        );
+    public <T> ResponseEntity<?> createSuccessResponse(String message, T data) {
+        return createSuccessResponse(message, null, data);
     }
 
-    public MessageDto createFailureResponse(String code, String description, String message) {
-        return new MessageDto(
+    public <T> ResponseEntity<?> createSuccessResponse(T data) {
+        return createSuccessResponse(null, null, data);
+    }
+
+    public ResponseEntity<?> createSuccessResponse() {
+        return createSuccessResponse(null, null, null);
+    }
+
+    public ResponseEntity<?> createFailureResponse(String code, String message, String description) {
+        BaseMessage responseMessage = new BaseMessage(
                 code,
                 false,
-                description,
-                message
-        );
+                message,
+                description);
+        return new ResponseEntity<>(responseMessage, HttpStatus.valueOf(Integer.parseInt(code)));
     }
 }

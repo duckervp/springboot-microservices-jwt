@@ -1,4 +1,4 @@
-package com.mst.user.client;
+package com.mst.user.config;
 
 import feign.RequestInterceptor;
 import org.apache.http.HttpHeaders;

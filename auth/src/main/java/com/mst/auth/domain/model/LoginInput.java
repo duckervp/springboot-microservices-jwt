@@ -1,4 +1,4 @@
-package com.mst.auth.domain.dto;
+package com.mst.auth.domain.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -11,7 +11,7 @@ import javax.validation.constraints.Size;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class LoginRequestDto {
+public class LoginInput {
     @NotNull
     @NotBlank
     @Size(min = 5, max = 25)

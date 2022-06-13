@@ -1,4 +1,4 @@
-package com.mst.auth.domain.dto;
+package com.mst.auth.domain.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -13,7 +13,7 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class RegisterRequestDto {
+public class RegisterInput {
     @NotNull
     @NotBlank
     @Size(min = 5, max = 30)

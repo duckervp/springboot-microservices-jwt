@@ -1,5 +1,6 @@
 package com.mst.major.config;
 
+import com.mst.major.auth.JwtTokenFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

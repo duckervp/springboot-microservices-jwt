@@ -1,4 +1,4 @@
-package com.mst.major.domain.dto;
+package com.mst.major.domain.message;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -7,9 +7,9 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class MessageDto {
+public class BaseMessage {
     private String code;
-    private Boolean status;
-    private String description;
+    private Boolean success;
     private String message;
+    private String description;
 }

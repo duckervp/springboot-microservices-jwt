@@ -19,8 +19,8 @@ public class MajorService implements IMajorService {
     }
 
     @Override
-    public void delete(Major major) {
-        majorRepository.deleteById(major.getId());
+    public void delete(Integer id) {
+        majorRepository.deleteById(id);
     }
 
     @Override
